@@ -79,6 +79,10 @@ const works: LightboxItem[] = [
   { type: "image", src: work6, label: "Nicho Hot Network" },
 ];
 
+const impressosItems: LightboxItem[] = [
+  { type: "image", src: impressosVinny, label: "Vinny Art — Comunicação Visual e Impressos" },
+];
+
 const sites = [
   { name: "Holo Builder Suite", url: "https://holo-builder-suite.vercel.app", img: siteHolo, tag: "Tech / Futurista" },
   { name: "Sono Profundo", url: "https://sono-profundo-magic.vercel.app", img: siteSono, tag: "Landing Page" },
@@ -86,7 +90,8 @@ const sites = [
 ];
 
 function Index() {
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [worksIndex, setWorksIndex] = useState<number | null>(null);
+  const [impressosOpen, setImpressosOpen] = useState(false);
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
@@ -118,7 +123,7 @@ function Index() {
         </div>
       </header>
 
-      {/* HERO — encurtado para que serviços e trabalhos apareçam logo */}
+      {/* HERO — encurtado para serviços e trabalhos aparecerem rápido */}
       <section id="hero" className="relative min-h-[88vh] flex items-center justify-center overflow-hidden bg-hero pt-28 pb-16">
         <div className="absolute inset-0 grid-bg" />
         <div className="glow-orb top-[8%] left-[12%] h-[420px] w-[420px] bg-primary/40 animate-pulse-glow" />
@@ -235,7 +240,7 @@ function Index() {
             <h2 className="text-4xl md:text-6xl font-bold leading-tight">
               Designs e vídeos que <span className="text-gradient">convertem</span>.
             </h2>
-            <p className="mt-4 text-sm text-muted-foreground">Clique em qualquer projeto para visualizar em tela cheia.</p>
+            <p className="mt-4 text-sm text-muted-foreground">Clique em qualquer projeto para ver em tela cheia.</p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
@@ -243,7 +248,7 @@ function Index() {
               <motion.button
                 key={i}
                 type="button"
-                onClick={() => setLightboxIndex(i)}
+                onClick={() => setWorksIndex(i)}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-30px" }}
@@ -308,16 +313,13 @@ function Index() {
 
           <motion.button
             type="button"
-            onClick={() => {
-              // append impressos to lightbox temporarily by using a dedicated item list:
-            }}
+            onClick={() => setImpressosOpen(true)}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="block w-full group relative overflow-hidden rounded-3xl glass shadow-card hover-lift"
+            className="block w-full group relative overflow-hidden rounded-3xl glass shadow-card hover-lift focus:outline-none focus:ring-2 focus:ring-primary"
             aria-label="Ver imagem de impressos em tela cheia"
-            onClickCapture={() => setImpressosOpen(true)}
           >
             <img
               src={impressosVinny}
@@ -475,26 +477,23 @@ function Index() {
         </div>
       </section>
 
-      {lightboxIndex !== null && (
+      {worksIndex !== null && (
         <Lightbox
           items={works}
-          index={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-          onNavigate={setLightboxIndex}
+          index={worksIndex}
+          onClose={() => setWorksIndex(null)}
+          onNavigate={setWorksIndex}
         />
       )}
 
-      <ImpressosLightboxMount />
+      {impressosOpen && (
+        <Lightbox
+          items={impressosItems}
+          index={0}
+          onClose={() => setImpressosOpen(false)}
+          onNavigate={() => {}}
+        />
+      )}
     </div>
   );
-}
-
-// Separate mount so the impressos image gets its own lightbox state
-function ImpressosLightboxMount() {
-  return null;
-}
-
-// Hoisted helper: opens an impressos lightbox via window event
-function setImpressosOpen(_open: boolean) {
-  // no-op placeholder — replaced by inline state below
 }
